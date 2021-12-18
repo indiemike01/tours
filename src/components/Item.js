@@ -1,43 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useReducer } from "react";
 import { tours } from "../data";
 
-const Item = () => {
-  const [description, setDescription] = useState([
-    tours.map((tour) => {
-      return {
-        id: tour.id,
-        description: tour.description1,
-        text: "Show more",
-      };
-    }),
-  ]);
-  // const [text, setText] = useState("Show more");
+const defaultDescriptionState = {
+  tours: tours.map((tour) => ({
+    ...tour,
+    displayDescription2: false,
+    showMore: "Show more",
+  })),
+};
 
-  const [displayDescription2, setDisplayDescription2] = useState(false);
-  const [showMore, setShowMore] = useState("Show more");
-  const displayMoreDescription = () => {
-    setDisplayDescription2(!displayDescription2);
-    setShowMore(displayDescription2 ? "Show  more" : "Show less");
+const Item = () => {
+  const reducer = (state, action) => {
+    if (action.type == "SHOW_MORE") {
+      const newTours = state.tours.map((tour) =>
+        tour.id == action.payload
+          ? {
+              ...tour,
+              displayDescription2: !tour.displayDescription2,
+              showMore: tour.displayDescription2 ? "Show  more" : "Show less",
+            }
+          : tour
+      );
+
+      return { tours: newTours };
+    }
+
+    // if (action.type == "REMOVE_TOUR") {
+    //   // console.log("Yeyy");
+    //   // return {
+    //   //   ...state,
+    //   //   displayDescription2: !state.displayDescription2,
+    //   //   showMore: state.displayDescription2 ? "Show  more" : "Show less",
+    //   // };
+    // }
   };
 
-  console.log(description);
+  const [state, dispach] = useReducer(reducer, defaultDescriptionState);
+
+  // console.log(state.tours);
+
   return (
     <>
-      {tours.map((tour) => {
+      {state.tours.map((tour) => {
         return (
-          <div key={tour.name}>
+          <div key={tour.id}>
             <img src={tour.photo} alt="" />
             <div key={tour.id}>
-              <h4></h4>
+              <h4>{tour.name}</h4>
               <h4>{tour.price}</h4>
               <h4>
-                {tour.description1}
-                {displayDescription2 && tour.description2}
-                <button onClick={() => displayMoreDescription()}>
-                  {showMore}
+                {tour.description1 + " "}
+                {tour.displayDescription2 && tour.description2}
+                <button
+                  onClick={() =>
+                    dispach({ type: "SHOW_MORE", payload: tour.id })
+                  }
+                >
+                  {tour.showMore}
                 </button>
               </h4>
-              <button type="btn">Not interested</button>
+              <button
+                type="btn"
+                // onClick={() =>
+                //   dispach({ type: "REMOVE_TOUR", payload: tour.id })
+                // }
+              >
+                Not interested
+              </button>
               <br />
             </div>
           </div>
