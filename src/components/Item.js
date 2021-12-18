@@ -25,14 +25,11 @@ const Item = () => {
       return { tours: newTours };
     }
 
-    // if (action.type == "REMOVE_TOUR") {
-    //   // console.log("Yeyy");
-    //   // return {
-    //   //   ...state,
-    //   //   displayDescription2: !state.displayDescription2,
-    //   //   showMore: state.displayDescription2 ? "Show  more" : "Show less",
-    //   // };
-    // }
+    if (action.type == "REMOVE_TOUR") {
+      const newTours = state.tours.filter((tour) => tour.id !== action.payload);
+
+      return { tours: newTours };
+    }
   };
 
   const [state, dispach] = useReducer(reducer, defaultDescriptionState);
@@ -61,9 +58,9 @@ const Item = () => {
               </h4>
               <button
                 type="btn"
-                // onClick={() =>
-                //   dispach({ type: "REMOVE_TOUR", payload: tour.id })
-                // }
+                onClick={() =>
+                  dispach({ type: "REMOVE_TOUR", payload: tour.id })
+                }
               >
                 Not interested
               </button>
